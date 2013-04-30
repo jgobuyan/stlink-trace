@@ -17,7 +17,7 @@
 
 // for the STM32F107Z, system clock is 72MHz
 // (CLK/SWO_CLK) - 1 = (72MHz/2MHz) - 1 = 35 = 0x23
-#define CLOCK_DIVISOR = 0x00000023
+#define CLOCK_DIVISOR   0x00000023
 // for the STM32F207Z, system clock is 120MHz
 // (CLK/SWO_CLK) - 1 = (120MHz/2MHz) - 1 = 59 = 0x3B
 //#define CLOCK_DIVISOR = 0x0000003B
@@ -240,7 +240,7 @@ int main(int argc, char** argv)
 		 if (checkCount++ > 4) {
 			 checkCount = 0;
 			 unsigned int value = ReadDHCSRValue();
-			 printf("DHCSR = 0x%04x\n", value);
+			 if (debugEnabled) printf("DHCSR = 0x%04x\n", value);
 		 }
      }
 
@@ -682,7 +682,7 @@ int ReadTraceData(int toscreen, int rxSize)
 
     // have trace data - display it
     bytesRead = responseTransfer->actual_length;
-    printf("Read response of %d bytes\n", bytesRead);
+    if (debugEnabled) printf("Read response of %d bytes\n", bytesRead);
 #else
     int ret = 0;
     int totalBytes = rxSize;
@@ -696,7 +696,7 @@ int ReadTraceData(int toscreen, int rxSize)
 					 totalBytes,
 					 &bytesRead,
 					 0);
-		printf("Read response %d of %d bytes. ret = %d\n", bytesRead, rxSize, ret);
+		if (debugEnabled) printf("Read response %d of %d bytes. ret = %d\n", bytesRead, rxSize, ret);
 		if (bytesRead != rxSize) {
 			printf("\n\n>>>>>>>>>>>>>>>>> Not read all trace data. <<<<<<<<<<<<<<<<<<<<\n\n");
 		}
@@ -746,7 +746,7 @@ int ReadTraceData(int toscreen, int rxSize)
 				//packetSize = rxBuffer[pos];	// 1, 2 or 4 bytes
 				ch = rxBuffer[pos+trace_offset];
 				if (toscreen) {
-					printf("%c",((ch < 31) | (ch > 127)) ? '.' : ch);
+					printf("%c",((ch < 10) | (ch > 127)) ? '.' : ch);
 				}
 				if (resultsFile != NULL) fprintf(resultsFile, "%c",ch);
 				pos += 2;
